@@ -31,11 +31,7 @@ import {RefreshToken} from "../model/refresh-token.entity";
 		CryptoService,
 		PassportModule,
 		JwtStrategy,
-		JwtAuthGuard,
-		// {
-		// 	provide: APP_GUARD,
-		// 	useClass: JwtAuthGuard,
-		// }
+		JwtAuthGuard
 	],
 	controllers: [AuthController]
 })

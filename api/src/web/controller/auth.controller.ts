@@ -15,22 +15,22 @@ export class AuthController {
 
 	constructor(private authService: AuthService) {}
 
-	@Post("/login")
+	@Post("login")
 	public async login(@Body() request: LoginRequest): Promise<Credentials> {
 		return this.authService.login(request);
 	}
 
-	@Post("/signup")
+	@Post("signup")
 	public async signUp(@Body() request: SignUpRequest): Promise<User> {
 		return this.authService.signUp(request);
 	}
 
-	@Post("/refresh")
+	@Post("refresh")
 	public async refreshCredentials(@Body() request: RefreshCredentialsRequest): Promise<Credentials> {
 		return this.authService.refreshCredentials(request);
 	}
 
-	@Get("/me")
+	@Get("me")
 	@UseGuards(JwtAuthGuard)
 	public async getUser(@Subject() principal: Principal): Promise<User> {
 		return this.authService.userById(principal.id);

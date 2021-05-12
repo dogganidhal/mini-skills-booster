@@ -1,21 +1,17 @@
 import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
-import {Role} from "../security/enums/role.enum";
 
 
-@Entity()
-export class UserEntity {
+@Entity('users')
+export class User {
 	@PrimaryGeneratedColumn()
 	public id: number;
 
 	@Column()
 	public email: string;
 
-	@Column()
+	@Column({ name: 'full_name' })
 	public fullName: string;
 
-	@Column()
+	@Column({ name: 'password_hash' })
 	public passwordHash: string;
-
-	@Column()
-	public role: Role;
 }

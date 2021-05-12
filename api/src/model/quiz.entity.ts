@@ -1,8 +1,8 @@
 import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
 
 
-@Entity()
-export class QuizEntity {
+@Entity('quizzes')
+export class Quiz {
 	@PrimaryGeneratedColumn()
 	public id: number;
 

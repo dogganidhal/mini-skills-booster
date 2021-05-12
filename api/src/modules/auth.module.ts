@@ -6,10 +6,10 @@ import {AuthService} from "../service/auth.service";
 import {JwtAuthGuard} from "../security/guard/jwt-auth.guard";
 import {CryptoService} from "../service/crypto.service";
 import {PassportModule} from "@nestjs/passport";
-import {UserEntity} from "../model/user.entity";
+import {User} from "../model/user.entity";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {AuthController} from "../web/controller/auth.controller";
-import {ConfigModule, ConfigService} from "@nestjs/config";
+import {RefreshToken} from "../model/refresh-token.entity";
 
 
 @Module({
@@ -19,22 +19,23 @@ import {ConfigModule, ConfigService} from "@nestjs/config";
 				return {
 					secret: process.env.JWT_SECRET,
 					signOptions: {
-						expiresIn: '60s'
+						expiresIn: '3600s'
 					}
 				};
 			}
 		}),
-		TypeOrmModule.forFeature([UserEntity]),
+		TypeOrmModule.forFeature([User, RefreshToken]),
 	],
 	providers: [
 		AuthService,
 		CryptoService,
 		PassportModule,
 		JwtStrategy,
-		{
-			provide: APP_GUARD,
-			useClass: JwtAuthGuard,
-		}
+		JwtAuthGuard,
+		// {
+		// 	provide: APP_GUARD,
+		// 	useClass: JwtAuthGuard,
+		// }
 	],
 	controllers: [AuthController]
 })

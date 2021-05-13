@@ -1,6 +1,10 @@
 import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {Quiz as QuizEntity} from "../model/quiz.entity";
 import {User as UserEntity} from "../model/user.entity";
+import {Submission as SubmissionEntity} from "../model/submission.entity";
+import {Question as QuestionEntity} from "../model/question.entity";
+import {Answer as AnswerEntity} from "../model/answer.entity";
+import {Suggestion as SuggestionEntity} from "../model/suggestion.entity";
 import {Quiz} from "../web/dto/output/quiz.dto";
 import {Repository} from "typeorm";
 import {InjectRepository} from "@nestjs/typeorm";
@@ -9,6 +13,8 @@ import {ModelIncludes} from "../model";
 import {QuestionType} from "../enums/question-type.enum";
 import {Question} from "../model/question.entity";
 import {PartialDeep} from "type-fest";
+import {SubmitAnswerRequest, SubmitQuizRequest} from "../web/dto/input/submit-quiz.dto";
+import {SubmissionReport} from "../web/dto/output/submission-report.dto";
 
 
 @Injectable()
@@ -18,7 +24,13 @@ export class QuizService {
 		@InjectRepository(QuizEntity)
 		private quizRepository: Repository<QuizEntity>,
 		@InjectRepository(UserEntity)
-		private userRepository: Repository<UserEntity>
+		private userRepository: Repository<UserEntity>,
+		@InjectRepository(SubmissionEntity)
+		private submissionRepository: Repository<SubmissionEntity>,
+		@InjectRepository(QuestionEntity)
+		private questionRepository: Repository<QuestionEntity>,
+		@InjectRepository(SuggestionEntity)
+		private suggestionRepository: Repository<SuggestionEntity>
 	) {}
 
 	public async createQuiz(authorId: number, request: CreateQuizRequest): Promise<Quiz> {
@@ -36,15 +48,47 @@ export class QuizService {
 	}
 
 	public async listQuizzes(): Promise<Quiz[]> {
-		return this.quizRepository.find({ relations: ModelIncludes.Quiz.All });
+		return this.quizRepository.find({ relations: ModelIncludes.Quiz.ExceptSubmissions });
 	}
 
-	public async quizById(quizId: number): Promise<Quiz> {
+	public async quizById(quizId: number, userId: number): Promise<Quiz> {
+		let quiz = await this.quizRepository.findOne(quizId, { relations: ModelIncludes.Quiz.ExceptSubmissions });
+		if (!quiz) {
+			throw new NotFoundException();
+		}
+		if (quiz.author.id === userId) {
+			quiz = await this.quizRepository.findOne(quizId, { relations: ModelIncludes.Quiz.All });
+		}
+		return quiz;
+	}
+
+	public async submitQuiz(userId: number, quizId: number, request: SubmitQuizRequest): Promise<SubmissionReport> {
+		const existingSubmission = await this.submissionRepository.findOne({
+			user: { id: userId },
+			quiz: { id: quizId }
+		});
+		if (existingSubmission) {
+			throw new BadRequestException('Quiz already answered, you cannot submit twice');
+		}
 		const quiz = await this.quizRepository.findOne(quizId, { relations: ModelIncludes.Quiz.All });
 		if (!quiz) {
 			throw new NotFoundException();
 		}
-		return quiz;
+		const answeredQuestionIds = request.answers.map(answer => answer.questionId);
+		if (quiz.questions.some(question => !answeredQuestionIds.includes(question.id))) {
+			throw new BadRequestException('Missing questions, please submit answers to all questions in quiz');
+		}
+		const user = await this.userRepository.findOneOrFail(userId);
+		const submission = await this.submissionRepository.save({
+			user,
+			quiz,
+			answers: await Promise.all(request.answers.map(this.mapSubmitAnswerRequests.bind(this)))
+		});
+		return {
+			quiz: quiz,
+			submission: await this.submissionRepository
+				.findOneOrFail(submission.id, { relations: ModelIncludes.Submission.StudentReport })
+		};
 	}
 
 	private static mapCreateQuestionRequests(request: CreateQuestionRequest): PartialDeep<Question> {
@@ -63,6 +107,36 @@ export class QuizService {
 				isCorrect: s.isCorrect
 			}))
 		};
+	}
+
+	private async mapSubmitAnswerRequests(request: SubmitAnswerRequest): Promise<PartialDeep<AnswerEntity>> {
+		const question = await this.questionRepository.findOne(request.questionId);
+		if (!question) {
+			throw new NotFoundException(`No question with id ${request.questionId} was found`);
+		}
+		if (question.type === QuestionType.FreeText && !request.content) {
+			throw new BadRequestException('Free form questions must have a non blank content property');
+		}
+		if (question.type !== QuestionType.FreeText && (!request.suggestionIds || request.suggestionIds.length === 0)) {
+			throw new BadRequestException('Choice questions must have a non empty suggestionIds property');
+		}
+
+		return {
+			question,
+			content: request.content,
+			suggestions: request.suggestionIds && await Promise.all(request.suggestionIds.map(id => this.mapSuggestionId(id, question)))
+		};
+	}
+
+	private async mapSuggestionId(id: number, question: QuestionEntity): Promise<SuggestionEntity> {
+		const suggestion = await this.suggestionRepository.findOne(id, { relations: ModelIncludes.Suggestion.All });
+		if (!suggestion) {
+			throw new NotFoundException();
+		}
+		if (suggestion.question.id !== question.id) {
+			throw new BadRequestException(`Suggestion with id ${id} cannot be associated with question with id ${question.id}`);
+		}
+		return suggestion;
 	}
 
 }

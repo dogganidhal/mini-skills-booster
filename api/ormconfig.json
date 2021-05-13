@@ -3,6 +3,7 @@
     "name": "default",
     "type": "sqlite",
     "database": "skills-booster.sqlite",
-    "synchronize": true
+    "synchronize": true,
+    "logging": ["query", "error"]
   }
 ]

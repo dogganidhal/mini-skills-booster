@@ -20,7 +20,18 @@ export const ModelIncludes = {
 		All: [
 			'user',
 			'answers',
-			'answers.suggestion'
+			'answers.suggestions'
+		],
+		StudentReport: [
+			'answers',
+			'answers.suggestions'
+		]
+	},
+	Suggestion: {
+		None: [],
+		All: [
+			'question',
+
 		]
 	},
 	Quiz: {
@@ -32,7 +43,12 @@ export const ModelIncludes = {
 			'submissions',
 			'submissions.user',
 			'submissions.answers',
-			'submissions.answers.suggestion',
+			'submissions.answers.suggestions',
+		],
+		ExceptSubmissions: [
+			'author',
+			'questions',
+			'questions.suggestions'
 		]
 	}
 };

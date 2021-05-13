@@ -15,6 +15,9 @@ export class Quiz {
 	@Column()
 	public description: string;
 
+	@Column({ name: 'due_date', type: 'datetime' })
+	public dueDate: Date;
+
 	@JoinColumn({ name: 'author_id' })
 	@ManyToOne(() => User)
 	public author: User;

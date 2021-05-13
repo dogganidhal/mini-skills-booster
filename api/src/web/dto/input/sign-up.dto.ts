@@ -1,6 +1,10 @@
+import {IsEmail, IsNotEmpty, MinLength} from "class-validator";
 
-export interface SignUpRequest {
-	readonly fullName: string;
-	readonly email: string;
-	readonly password: string;
+export class SignUpRequest {
+	@IsNotEmpty()
+	public fullName: string;
+	@IsEmail()
+	public email: string;
+	@MinLength(6)
+	public password: string;
 }

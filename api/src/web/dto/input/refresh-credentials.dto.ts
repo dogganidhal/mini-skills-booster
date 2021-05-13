@@ -1,5 +1,7 @@
+import {IsNotEmpty} from "class-validator";
 
 
-export interface RefreshCredentialsRequest {
-	readonly refreshToken: string;
+export class RefreshCredentialsRequest {
+	@IsNotEmpty()
+	public refreshToken: string;
 }

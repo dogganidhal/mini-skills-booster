@@ -1,21 +1,30 @@
 import {QuestionType} from "../../../enums/question-type.enum";
+import {ArrayNotEmpty, IsDateString, IsEnum, IsNotEmpty} from "class-validator";
 
 
-export interface CreateQuizRequest {
-	readonly name: string;
-	readonly description: string;
-	readonly questions: CreateQuestionRequest[];
+export class CreateQuizRequest {
+	@IsNotEmpty()
+	public name: string;
+	@IsNotEmpty()
+	public description: string;
+	@ArrayNotEmpty()
+	public questions: CreateQuestionRequest[];
+	@IsDateString()
+	public dueDate: Date;
 }
 
 
-export interface CreateQuestionRequest {
-	readonly content: string;
-	readonly type: QuestionType;
-	readonly suggestions?: CreateSuggestionRequest[];
+export class CreateQuestionRequest {
+	@IsNotEmpty()
+	public content: string;
+	@IsEnum(QuestionType)
+	public type: QuestionType;
+	public suggestions?: CreateSuggestionRequest[];
 }
 
 
-export interface CreateSuggestionRequest {
-	readonly content: string;
-	readonly isCorrect: boolean;
+export class CreateSuggestionRequest {
+	@IsNotEmpty()
+	public content: string;
+	public isCorrect: boolean;
 }

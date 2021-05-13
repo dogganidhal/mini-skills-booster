@@ -4,10 +4,11 @@ import {User as UserEntity} from "../model/user.entity";
 import {Quiz} from "../web/dto/output/quiz.dto";
 import {Repository} from "typeorm";
 import {InjectRepository} from "@nestjs/typeorm";
-import {CreateQuizRequest, CreateSuggestionRequest} from "../web/dto/input/create-quiz.dto";
+import {CreateQuestionRequest, CreateQuizRequest} from "../web/dto/input/create-quiz.dto";
 import {ModelIncludes} from "../model";
-import {Suggestion} from "../model/suggestion.entity";
 import {QuestionType} from "../enums/question-type.enum";
+import {Question} from "../model/question.entity";
+import {PartialDeep} from "type-fest";
 
 
 @Injectable()
@@ -29,11 +30,8 @@ export class QuizService {
 			author,
 			name: request.name,
 			description: request.description,
-			questions: request.questions.map(questionRequest => ({
-				content: questionRequest.content,
-				type: questionRequest.type,
-				suggestions: QuizService.mapCreateSuggestionRequests(questionRequest.type, questionRequest.suggestions)
-			}))
+			dueDate: request.dueDate,
+			questions: request.questions.map(QuizService.mapCreateQuestionRequests)
 		});
 	}
 
@@ -49,15 +47,22 @@ export class QuizService {
 		return quiz;
 	}
 
-	private static mapCreateSuggestionRequests(questionType: QuestionType, suggestions: CreateSuggestionRequest[]): Partial<Suggestion>[] {
-		const multipleCorrectSuggestions = suggestions.map(r => r.isCorrect).length > 1;
-		if (questionType === QuestionType.SingleChoice && multipleCorrectSuggestions) {
+	private static mapCreateQuestionRequests(request: CreateQuestionRequest): PartialDeep<Question> {
+		if (request.type === QuestionType.FreeText && request.suggestions) {
+			throw new BadRequestException('Free text questions can\'t have suggestions');
+		}
+		const multipleCorrectSuggestions = (request.suggestions?.filter(r => r.isCorrect)?.length || 0) > 1;
+		if (request.type === QuestionType.SingleChoice && multipleCorrectSuggestions) {
 			throw new BadRequestException('Single choice questions can\'t have multiple correct suggestions');
 		}
-		return suggestions.map(suggestionRequest => ({
-			content: suggestionRequest.content,
-			isCorrect: suggestionRequest.isCorrect
-		}));
+		return {
+			content: request.content,
+			type: request.type,
+			suggestions: request.suggestions?.map(s => ({
+				content: s.content,
+				isCorrect: s.isCorrect
+			}))
+		};
 	}
 
 }

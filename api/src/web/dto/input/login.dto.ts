@@ -1,6 +1,9 @@
+import {IsEmail, IsNotEmpty} from "class-validator";
 
 
-export interface LoginRequest {
-	readonly email: string;
-	readonly password: string;
+export class LoginRequest {
+	@IsEmail()
+	public email: string;
+	@IsNotEmpty()
+	public password: string;
 }

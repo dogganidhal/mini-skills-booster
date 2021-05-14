@@ -18,6 +18,7 @@ import {MessageModule} from "primeng/message";
 import {MessagesModule} from "primeng/messages";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ProgressBarModule} from "primeng/progressbar";
+import {ToastModule} from "primeng/toast";
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import {ProgressBarModule} from "primeng/progressbar";
     MessagesModule,
     MessageModule,
     BrowserAnimationsModule,
-    ProgressBarModule
+    ProgressBarModule,
+    ToastModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }

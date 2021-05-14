@@ -15,6 +15,7 @@ export class LoginComponent {
   constructor(private authService: AuthService) { }
 
   public submit() {
+    // TODO: Use proper validation
     if (this.email.length > 0 && this.password.length > 0) {
       this.errors = [];
       this.loading = true;

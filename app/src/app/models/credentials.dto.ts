@@ -6,3 +6,8 @@ export interface Credentials {
 	readonly refreshToken: string;
 	readonly expiresIn: number;
 }
+
+
+export type ExpiryAwareCredentials = Credentials & {
+  readonly expiresAt: number;
+};

@@ -1,0 +1,13 @@
+<p-toolbar>
+  <div class="p-toolbar-group-left">
+    <p-button label="New" icon="pi pi-plus"></p-button>
+  </div>
+
+  <div class="p-toolbar-group-right">
+    <p-button icon="pi pi-sign-out" (click)="logout()"></p-button>
+  </div>
+</p-toolbar>
+<h3>My quizzes</h3>
+<app-user-quizzes [quizzes]="userQuizzes"></app-user-quizzes>
+<h3>My submissions</h3>
+<app-user-submissions [submissions]="userSubmissions"></app-user-submissions>

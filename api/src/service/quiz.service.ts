@@ -15,6 +15,7 @@ import {Question} from "../model/question.entity";
 import {PartialDeep} from "type-fest";
 import {SubmitAnswerRequest, SubmitQuizRequest} from "../web/dto/input/submit-quiz.dto";
 import {SubmissionReport} from "../web/dto/output/submission-report.dto";
+import {Submission} from "../web/dto/output/submission.dto";
 
 
 @Injectable()
@@ -89,6 +90,32 @@ export class QuizService {
 			submission: await this.submissionRepository
 				.findOneOrFail(submission.id, { relations: ModelIncludes.Submission.StudentReport })
 		};
+	}
+
+	public async getUserQuizzes(userId: number): Promise<Quiz[]> {
+		return this.quizRepository
+			.createQueryBuilder('quiz')
+			.innerJoinAndSelect('quiz.author', 'author')
+			.innerJoinAndSelect('quiz.questions', 'questions')
+			.leftJoinAndSelect('questions.suggestions', 'suggestions')
+			.innerJoinAndSelect('quiz.submissions', 'submissions')
+			.leftJoinAndSelect('submissions.answers', 'answers')
+			.leftJoinAndSelect('answers.suggestions', 'answer_suggestions')
+			.where('author.id=:userId', { userId })
+			.getMany();
+	}
+
+	public async getUserSubmissions(userId: number): Promise<Submission[]> {
+		return this.submissionRepository
+			.createQueryBuilder('submission')
+			.innerJoinAndSelect('submission.quiz', 'quiz')
+			.innerJoinAndSelect('submission.user', 'user')
+			.innerJoinAndSelect('submission.answers', 'answers')
+			.leftJoinAndSelect('answers.question', 'question')
+			.leftJoinAndSelect('question.suggestions', 'question_suggestions')
+			.leftJoinAndSelect('answers.suggestions', 'answer_suggestions')
+			.where('user.id=:userId', { userId })
+			.getMany();
 	}
 
 	private static mapCreateQuestionRequests(request: CreateQuestionRequest): PartialDeep<Question> {

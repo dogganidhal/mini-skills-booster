@@ -1,11 +1,11 @@
-import {catchError, tap} from "rxjs/operators";
+import {catchError, map, tap} from "rxjs/operators";
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {BehaviorSubject, Observable} from "rxjs";
 import {User} from "../../models/user.dto";
 import {SignUpRequest} from "../../models/sign-up.dto";
 import {LoginRequest} from "../../models/login.dto";
-import {Credentials} from "../../models/credentials.dto";
+import {Credentials, ExpiryAwareCredentials} from "../../models/credentials.dto";
 import {environment} from "../../../environments/environment";
 import {BaseService} from "../index";
 
@@ -18,12 +18,11 @@ export class AuthService extends BaseService {
 
   private isConnectedBS: BehaviorSubject<boolean>;
 
-  public get credentials(): Credentials | undefined {
-    console.log('read');
-    const json = localStorage.getItem(AuthService.CREDENTIALS_KEY);
-    return json && JSON.parse(json);
+  public get credentials(): ExpiryAwareCredentials | null {
+    const jsonString = localStorage.getItem(AuthService.CREDENTIALS_KEY);
+    return jsonString !== null ? JSON.parse(jsonString) : null;
   }
-  public set credentials(value: Credentials | undefined) {
+  public set credentials(value: ExpiryAwareCredentials | null) {
     if (value) {
       this.isConnectedBS.next(true);
       localStorage.setItem(AuthService.CREDENTIALS_KEY, JSON.stringify(value));
@@ -34,19 +33,20 @@ export class AuthService extends BaseService {
 
   public isConnected: Observable<boolean>;
   public get connected(): boolean {
-    return this.credentials !== undefined;
+    return this.credentials !== null;
   }
 
-  constructor(private httpClient: HttpClient) {
-    super();
+  constructor(httpClient: HttpClient) {
+    super(httpClient);
     this.isConnectedBS = new BehaviorSubject<boolean>(this.credentials !== null);
     this.isConnected = this.isConnectedBS.asObservable();
   }
 
-  public login(request: LoginRequest): Observable<Credentials> {
+  public login(request: LoginRequest): Observable<ExpiryAwareCredentials> {
     return this.httpClient
       .post<Credentials>(`${environment.apiUrl}/auth/login`, request)
       .pipe(
+        map(credentials => AuthService.formatCredentials(credentials)),
         tap(credentials => this.credentials = credentials),
         catchError(this.handleError.bind(this))
       );
@@ -58,14 +58,27 @@ export class AuthService extends BaseService {
       .pipe(catchError(this.handleError.bind(this)));
   }
 
-  public refreshCredentials(refreshToken: string): Promise<Credentials> {
+  public refreshCredentials(refreshToken: string): Promise<ExpiryAwareCredentials> {
     return this.httpClient
       .post<Credentials>(`${environment.apiUrl}/auth/refresh`, { refreshToken })
       .pipe(
+        map(credentials => AuthService.formatCredentials(credentials)),
         tap(credentials => this.credentials = credentials),
         catchError(this.handleError.bind(this))
       )
       .toPromise();
+  }
+
+  public logout() {
+    localStorage.removeItem(AuthService.CREDENTIALS_KEY);
+    this.credentials = null;
+  }
+
+  private static formatCredentials(credentials: Credentials): ExpiryAwareCredentials {
+    return {
+      ...credentials,
+      expiresAt: Date.now() + credentials.expiresIn
+    };
   }
 
 }

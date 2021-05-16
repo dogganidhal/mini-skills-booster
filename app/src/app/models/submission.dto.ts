@@ -7,5 +7,6 @@ export interface Submission {
 	readonly id: number;
 	readonly quiz: Quiz;
 	readonly user: User;
+	readonly date: Date;
 	readonly answers: Answer[];
 }

@@ -7,6 +7,7 @@ import {Principal} from "../dto/output/principal.dto";
 import {Quiz} from "../dto/output/quiz.dto";
 import {SubmitQuizRequest} from "../dto/input/submit-quiz.dto";
 import {SubmissionReport} from "../dto/output/submission-report.dto";
+import {Submission} from "../dto/output/submission.dto";
 
 
 @Controller('quiz')
@@ -25,6 +26,18 @@ export class QuizController {
 	@UseGuards(JwtAuthGuard)
 	public async listQuizzes(): Promise<Quiz[]> {
 		return this.quizService.listQuizzes();
+	}
+
+	@Get('mine')
+	@UseGuards(JwtAuthGuard)
+	public async getUserQuizzes(@Subject() principal: Principal): Promise<Quiz[]> {
+		return this.quizService.getUserQuizzes(principal.id);
+	}
+
+	@Get('submission/mine')
+	@UseGuards(JwtAuthGuard)
+	public async getUserSubmissions(@Subject() principal: Principal): Promise<Submission[]> {
+		return this.quizService.getUserSubmissions(principal.id);
 	}
 
 	@Get(':id')

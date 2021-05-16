@@ -1,0 +1,25 @@
+<p-table [value]="submissions" styleClass="p-datatable-gridlines">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Id</th>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Date</th>
+      <th></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-submission>
+    <tr>
+      <td>{{submission.quiz.id}}</td>
+      <td>{{submission.quiz.name}}</td>
+      <td>{{submission.quiz.description}}</td>
+      <td>{{submission.date}}</td>
+      <td><button [routerLink]="'/submission/' + submission.id" pButton type="button" icon="pi pi-arrow-right" class="p-button-raised p-button-rounded"></button></td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="8">No user submissions found.</td>
+    </tr>
+  </ng-template>
+</p-table>

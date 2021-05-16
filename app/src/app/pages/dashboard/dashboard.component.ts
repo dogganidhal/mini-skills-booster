@@ -24,7 +24,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public userQuizzes: Quiz[] = [];
   public userSubmissions: Submission[] = [];
 
-  constructor(private quizService: QuizService, private authService: AuthService) {}
+  constructor(private quizService: QuizService, private authService: AuthService) { }
 
   public ngOnInit() {
     this.subscriptions.push(

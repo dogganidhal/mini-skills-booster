@@ -1,0 +1,35 @@
+<p>{{ question.content }}</p>
+<div *ngIf="question.suggestions !== undefined">
+  <div *ngIf="question.type === 'free_text'">
+    <div class="field-checkbox p-fluid p-formgrid p-grid">
+      <div class="p-field p-col-12">
+        <label for="free-text-field">Answer</label>
+        <textarea id="free-text-field" rows="4" [(ngModel)]="freeTextAnswer" [style]="{ resize: 'none' }" pInputTextarea></textarea>
+      </div>
+    </div>
+  </div>
+  <div *ngFor="let suggestion of question.suggestions">
+    <div *ngIf="question.type == 'multi_choice'">
+      <div class="field-checkbox">
+        <p-checkbox
+          [(ngModel)]="multiSuggestions"
+          [name]="suggestion.id.toString()"
+          [value]="suggestion.id.toString()"
+          [inputId]="suggestion.id.toString()">
+        </p-checkbox>
+        <label class="field-checkbox-label" [for]="suggestion.id.toString()">{{ suggestion.content }}</label>
+      </div>
+    </div>
+    <div *ngIf="question.type == 'single_choice'">
+      <div class="field-checkbox">
+        <p-radioButton
+          [(ngModel)]="singleSuggestion"
+          [name]="suggestion.id.toString()"
+          [value]="suggestion.id.toString()"
+          [inputId]="suggestion.id.toString()">
+        </p-radioButton>
+        <label class="field-checkbox-label" [for]="suggestion.id.toString()">{{ suggestion.content }}</label>
+      </div>
+    </div>
+  </div>
+</div>

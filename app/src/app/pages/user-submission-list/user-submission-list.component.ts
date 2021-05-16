@@ -2,11 +2,11 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Submission} from "../../models/submission.dto";
 
 @Component({
-  selector: 'app-user-submissions',
-  templateUrl: './user-submissions.component.html',
-  styleUrls: ['./user-submissions.component.scss']
+  selector: 'app-user-submission-list',
+  templateUrl: './user-submission-list.component.html',
+  styleUrls: ['./user-submission-list.component.scss']
 })
-export class UserSubmissionsComponent implements OnInit {
+export class UserSubmissionListComponent implements OnInit {
 
   @Input()
   public submissions: Submission[] = [];

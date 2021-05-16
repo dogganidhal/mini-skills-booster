@@ -18,9 +18,7 @@ export class AppComponent {
   public ngOnInit() {
     this.subscription = this.authService.isConnected
       .pipe(tap(connected => {
-        if (connected) {
-          this.router.navigateByUrl('');
-        } else {
+        if (!connected) {
           this.router.navigateByUrl('auth');
         }
       }))

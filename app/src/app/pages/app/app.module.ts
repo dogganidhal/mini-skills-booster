@@ -6,6 +6,7 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {AuthInterceptor} from "../../interceptors/auth/auth.interceptor";
 import {AuthModule} from "../auth/auth.module";
 import {DashboardModule} from "../dashboard/dashboard.module";
+import {MessageService} from "primeng/api";
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import {DashboardModule} from "../dashboard/dashboard.module";
     DashboardModule
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    MessageService
   ],
   bootstrap: [AppComponent]
 })

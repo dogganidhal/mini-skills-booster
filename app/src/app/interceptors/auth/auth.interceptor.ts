@@ -23,13 +23,6 @@ export class AuthInterceptor implements HttpInterceptor {
     let authenticatedRequest = request;
     let credentials = this.authService.credentials;
     if (this.authService.connected && credentials !== null) {
-      console.info('Credentials found, sending authenticated request');
-      if (Date.now() > credentials.expiresAt) {
-        console.info('Credentials expired, refreshing and sending request');
-        this.authService.logout();
-        credentials = await this.authService
-          .refreshCredentials(credentials.refreshToken);
-      }
       authenticatedRequest = AuthInterceptor.adaptRequest(request, credentials.token);
     }
     return next.handle(authenticatedRequest).toPromise();

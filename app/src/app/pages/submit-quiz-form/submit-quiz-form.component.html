@@ -1,0 +1,14 @@
+<p-toast></p-toast>
+<div class="center-content pad-content">
+  <p-progressBar *ngIf="loading" mode="indeterminate"></p-progressBar>
+  <p-card class="quiz-form-container" [header]="quiz.name" [subheader]="quiz.description"  *ngIf="quiz !== undefined">
+    <div *ngFor="let question of quiz.questions">
+      <p-divider></p-divider>
+      <app-question-panel (answerChanged)="addOrEditAnswers($event)" [question]="question" [editable]="true"></app-question-panel>
+    </div>
+    <ng-template pTemplate="footer">
+      <p-button label="Submit" [loading]="loading" [disabled]="!valid" (click)="submit()" icon="pi pi-check"></p-button>
+      <p-button label="Cancel" routerLink="/" icon="pi pi-times" styleClass="p-button-secondary" [style]="{'margin-left': '.5em'}"></p-button>
+    </ng-template>
+  </p-card>
+</div>

@@ -8,9 +8,6 @@
 </div>
 <p-messages [(value)]="errors" [enableService]="false"></p-messages>
 <div class="form-submit-button-container">
-  <p-button label="Login" (click)="submit()">
+  <p-button label="Login" [loading]="loading" (click)="submit()">
   </p-button>
-</div>
-<div *ngIf="loading">
-  <p-progressBar mode="indeterminate"></p-progressBar>
 </div>

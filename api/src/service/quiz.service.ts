@@ -1,4 +1,4 @@
-import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, ForbiddenException, Injectable, NotFoundException} from '@nestjs/common';
 import {Quiz as QuizEntity} from "../model/quiz.entity";
 import {User as UserEntity} from "../model/user.entity";
 import {Submission as SubmissionEntity} from "../model/submission.entity";
@@ -57,6 +57,7 @@ export class QuizService {
 		if (!quiz) {
 			throw new NotFoundException();
 		}
+		// TODO: Find a more efficient way to do this
 		if (quiz.author.id === userId) {
 			quiz = await this.quizRepository.findOne(quizId, { relations: ModelIncludes.Quiz.All });
 		}
@@ -116,6 +117,14 @@ export class QuizService {
 			.leftJoinAndSelect('answers.suggestions', 'answer_suggestions')
 			.where('user.id=:userId', { userId })
 			.getMany();
+	}
+
+	public async submissionById(submissionId: number, userId: number): Promise<Submission> {
+		let submission = await this.submissionRepository.findOne(submissionId, { relations: ModelIncludes.Submission.All });
+		if (submission.user.id === userId || submission.quiz.author.id === userId) {
+			return submission;
+		}
+		throw new ForbiddenException();
 	}
 
 	private static mapCreateQuestionRequests(request: CreateQuestionRequest): PartialDeep<Question> {

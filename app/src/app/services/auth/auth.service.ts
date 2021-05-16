@@ -8,6 +8,7 @@ import {LoginRequest} from "../../models/login.dto";
 import {Credentials, ExpiryAwareCredentials} from "../../models/credentials.dto";
 import {environment} from "../../../environments/environment";
 import {BaseService} from "../index";
+import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
@@ -23,8 +24,10 @@ export class AuthService extends BaseService {
     return jsonString !== null ? JSON.parse(jsonString) : null;
   }
   public set credentials(value: ExpiryAwareCredentials | null) {
-    if (value) {
+    if (value !== null) {
       this.isConnectedBS.next(true);
+      this.startRefreshTokenTimer();
+      this.router.navigateByUrl('');
       localStorage.setItem(AuthService.CREDENTIALS_KEY, JSON.stringify(value));
     } else {
       this.isConnectedBS.next(false);
@@ -36,7 +39,7 @@ export class AuthService extends BaseService {
     return this.credentials !== null;
   }
 
-  constructor(httpClient: HttpClient) {
+  constructor(httpClient: HttpClient, private router: Router) {
     super(httpClient);
     this.isConnectedBS = new BehaviorSubject<boolean>(this.credentials !== null);
     this.isConnected = this.isConnectedBS.asObservable();
@@ -58,9 +61,12 @@ export class AuthService extends BaseService {
       .pipe(catchError(this.handleError.bind(this)));
   }
 
-  public refreshCredentials(refreshToken: string): Promise<ExpiryAwareCredentials> {
+  public refreshCredentials(): Promise<ExpiryAwareCredentials> {
+    if (this.credentials === null) {
+      throw new Error('AuthService.refreshCredentials() with while no user being authenticated');
+    }
     return this.httpClient
-      .post<Credentials>(`${environment.apiUrl}/auth/refresh`, { refreshToken })
+      .post<Credentials>(`${environment.apiUrl}/auth/refresh`, { refreshToken: this.credentials.refreshToken })
       .pipe(
         map(credentials => AuthService.formatCredentials(credentials)),
         tap(credentials => this.credentials = credentials),
@@ -72,6 +78,7 @@ export class AuthService extends BaseService {
   public logout() {
     localStorage.removeItem(AuthService.CREDENTIALS_KEY);
     this.credentials = null;
+    this.stopRefreshTokenTimer();
   }
 
   private static formatCredentials(credentials: Credentials): ExpiryAwareCredentials {
@@ -79,6 +86,19 @@ export class AuthService extends BaseService {
       ...credentials,
       expiresAt: Date.now() + credentials.expiresIn
     };
+  }
+
+  private refreshTokenTimeout?: number;
+
+  private startRefreshTokenTimer() {
+    if (this.credentials !== null) {
+      const timeout = this.credentials.expiresIn;
+      this.refreshTokenTimeout = setTimeout(async () => await this.refreshCredentials(), timeout);
+    }
+  }
+
+  private stopRefreshTokenTimer() {
+    clearTimeout(this.refreshTokenTimeout);
   }
 
 }

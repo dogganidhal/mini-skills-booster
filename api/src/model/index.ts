@@ -20,7 +20,11 @@ export const ModelIncludes = {
 		All: [
 			'user',
 			'answers',
-			'answers.suggestions'
+			'answers.suggestions',
+			'quiz',
+			'quiz.author',
+			'quiz.questions',
+			'quiz.questions.suggestions'
 		],
 		StudentReport: [
 			'answers',

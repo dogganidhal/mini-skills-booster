@@ -40,6 +40,8 @@ export class SubmitQuizFormComponent implements OnInit {
   public addOrEditAnswers(answer: SubmitAnswerRequest) {
     this.answers[answer.questionId] = answer;
     this.valid = this.quiz.questions.length === Object.values(this.answers).length;
+    console.log(this.valid);
+    console.log(this.quiz.questions.length, Object.keys(this.answers).length)
   }
 
   public submit() {

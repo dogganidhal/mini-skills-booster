@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Submission} from "../../models/submission.dto";
 import {ActivatedRoute} from "@angular/router";
 import {QuizService} from "../../services/quiz/quiz.service";
+import {Answer} from "../../models/answer.dto";
 
 @Component({
   selector: 'app-user-submission-details',
@@ -11,18 +12,24 @@ import {QuizService} from "../../services/quiz/quiz.service";
 export class UserSubmissionDetailsComponent implements OnInit {
 
   public submission?: Submission;
-  public loading: boolean = true;
+  public loading: boolean = false;
 
   constructor(private route: ActivatedRoute, private quizService: QuizService) { }
 
   public ngOnInit() {
+    this.loading = true;
     this.route.params
-      .subscribe(({ id }) => this.quizService.submissionById(id)
-        .subscribe(s => {
-          this.submission = s;
-          this.loading = false
-        })
-      );
+      .subscribe(({ id }) => {
+        this.quizService.submissionById(id)
+          .subscribe(s => {
+            this.submission = s;
+            this.loading = false
+          });
+      });
+  }
+
+  public getAnswer(questionId: number): Answer | undefined {
+    return this.submission?.answers?.filter(a => a.question.id === questionId)?.pop();
   }
 
 }

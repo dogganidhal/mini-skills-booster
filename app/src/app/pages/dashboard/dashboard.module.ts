@@ -21,6 +21,7 @@ import {FormsModule} from "@angular/forms";
 import {RadioButtonModule} from "primeng/radiobutton";
 import {InputTextareaModule} from "primeng/inputtextarea";
 import {ToastModule} from "primeng/toast";
+import {AnswerPanelComponent} from "../answer-panel/answer-panel.component";
 
 
 
@@ -32,7 +33,8 @@ import {ToastModule} from "primeng/toast";
     UserSubmissionDetailsComponent,
     SubmitQuizFormComponent,
     CreateQuizFormComponent,
-    QuestionPanelComponent
+    QuestionPanelComponent,
+    AnswerPanelComponent
   ],
   imports: [
     CommonModule,

@@ -121,6 +121,9 @@ export class QuizService {
 
 	public async submissionById(submissionId: number, userId: number): Promise<Submission> {
 		let submission = await this.submissionRepository.findOne(submissionId, { relations: ModelIncludes.Submission.All });
+		if (!submission) {
+			throw new NotFoundException();
+		}
 		if (submission.user.id === userId || submission.quiz.author.id === userId) {
 			return submission;
 		}

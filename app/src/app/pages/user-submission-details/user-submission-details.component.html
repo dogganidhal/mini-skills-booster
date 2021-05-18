@@ -1,1 +1,14 @@
-<p>user-submission-details works!</p>
+<div class="center-content pad-content">
+  <p-progressBar *ngIf="loading" mode="indeterminate"></p-progressBar>
+  <div *ngIf="submission !== undefined" class="quiz-form-container">
+    <p-card [header]="submission.quiz.name" [subheader]="submission.quiz.description">
+      <div *ngFor="let question of submission.quiz.questions">
+        <p-divider></p-divider>
+        <app-answer-panel [answer]="getAnswer(question.id)!" [question]="question"></app-answer-panel>
+      </div>
+      <ng-template pTemplate="footer">
+        <p-button label="Back" routerLink="/" icon="pi pi-times" styleClass="p-button-secondary" [style]="{'margin-left': '.5em'}"></p-button>
+      </ng-template>
+    </p-card>
+  </div>
+</div>

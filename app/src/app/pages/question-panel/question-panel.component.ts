@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Question} from "../../models/question.dto";
 import {SubmitAnswerRequest} from "../../models/submit-quiz.dto";
+import {QuestionType} from "../../models/question-type.dto";
 
 @Component({
   selector: 'app-question-panel',
@@ -20,43 +21,30 @@ export class QuestionPanelComponent implements OnInit {
 
   private answer!: SubmitAnswerRequest;
 
-  public get multiSuggestions(): number[] {
-    return this.answer.suggestionIds || [];
-  }
-  public set multiSuggestions(value: number[]) {
-    this.answer = {
-      ...this.answer,
-      suggestionIds: value
-    };
-    this.answerChanged.emit(this.answer);
-  }
-  public get singleSuggestion(): string | undefined {
-    return this.answer.suggestionIds && this.answer.suggestionIds[0]?.toString();
-  }
-  public set singleSuggestion(value: string | undefined) {
-    this.answer = {
-      ...this.answer,
-      suggestionIds: value ? [parseInt(value)] : []
-    };
-    this.answerChanged.emit(this.answer);
-  }
-  public get freeTextAnswer(): string | undefined {
-    return this.answer.content;
-  }
-  public set freeTextAnswer(value: string | undefined) {
-    this.answer = {
-      ...this.answer,
-      content: value
-    };
-    this.answerChanged.emit(this.answer);
-  }
+  public multiSuggestions: number[] = [];
+  public singleSuggestion: number | undefined;
+  public freeTextAnswer: string | undefined;
 
   constructor() { }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.answer = {
       questionId: this.question.id
     };
+  }
+
+  public updateAnswer() {
+    const suggestionIds = this.question.type === QuestionType.MultipleChoice ?
+      this.multiSuggestions :
+      this.singleSuggestion ?
+        [this.singleSuggestion] :
+        [];
+    this.answer = {
+      ...this.answer,
+      suggestionIds,
+      content: this.question.type === QuestionType.FreeText ? this.freeTextAnswer : undefined
+    };
+    this.answerChanged.emit(this.answer);
   }
 
 }

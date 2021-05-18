@@ -9,7 +9,7 @@ import {Submission} from "../../models/submission.dto";
 export class UserSubmissionListComponent implements OnInit {
 
   @Input()
-  public submissions: Submission[] = [];
+  public submissions!: Submission[];
 
   constructor() { }
 

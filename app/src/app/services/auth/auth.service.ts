@@ -24,9 +24,10 @@ export class AuthService extends BaseService {
     return jsonString !== null ? JSON.parse(jsonString) : null;
   }
   public set credentials(value: ExpiryAwareCredentials | null) {
+    console.log('set credentials', value);
     if (value !== null) {
       this.isConnectedBS.next(true);
-      this.startRefreshTokenTimer();
+      // this.startRefreshTokenTimer();
       this.router.navigateByUrl('');
       localStorage.setItem(AuthService.CREDENTIALS_KEY, JSON.stringify(value));
     } else {
@@ -61,7 +62,7 @@ export class AuthService extends BaseService {
       .pipe(catchError(this.handleError.bind(this)));
   }
 
-  public refreshCredentials(): Promise<ExpiryAwareCredentials> {
+  public refreshCredentials(): Observable<ExpiryAwareCredentials> {
     if (this.credentials === null) {
       throw new Error('AuthService.refreshCredentials() with while no user being authenticated');
     }
@@ -69,16 +70,18 @@ export class AuthService extends BaseService {
       .post<Credentials>(`${environment.apiUrl}/auth/refresh`, { refreshToken: this.credentials.refreshToken })
       .pipe(
         map(credentials => AuthService.formatCredentials(credentials)),
-        tap(credentials => this.credentials = credentials),
+        tap(credentials => {
+          this.credentials = credentials;
+          console.log('credentials: ', credentials)
+        }),
         catchError(this.handleError.bind(this))
-      )
-      .toPromise();
+      );
   }
 
   public logout() {
     localStorage.removeItem(AuthService.CREDENTIALS_KEY);
     this.credentials = null;
-    this.stopRefreshTokenTimer();
+    // this.stopRefreshTokenTimer();
   }
 
   private static formatCredentials(credentials: Credentials): ExpiryAwareCredentials {
@@ -88,17 +91,17 @@ export class AuthService extends BaseService {
     };
   }
 
-  private refreshTokenTimeout?: number;
-
-  private startRefreshTokenTimer() {
-    if (this.credentials !== null) {
-      const timeout = this.credentials.expiresIn;
-      this.refreshTokenTimeout = setTimeout(async () => await this.refreshCredentials(), timeout);
-    }
-  }
-
-  private stopRefreshTokenTimer() {
-    clearTimeout(this.refreshTokenTimeout);
-  }
+  // private refreshTokenTimeout?: number;
+  //
+  // private startRefreshTokenTimer() {
+  //   if (this.credentials !== null) {
+  //     const timeout = this.credentials.expiresIn;
+  //     this.refreshTokenTimeout = setTimeout(async () => await this.refreshCredentials().subscribe(), timeout);
+  //   }
+  // }
+  //
+  // private stopRefreshTokenTimer() {
+  //   clearTimeout(this.refreshTokenTimeout);
+  // }
 
 }

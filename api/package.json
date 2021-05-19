@@ -1,8 +1,8 @@
 {
-  "name": "nest-typescript-starter",
+  "name": "mini-skills-booster-api",
   "private": true,
   "version": "1.0.0",
-  "description": "Nest TypeScript starter repository",
+  "description": "Mini Skills Booster Nest.js API",
   "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",
@@ -61,7 +61,8 @@
     "ts-loader": "^8.0.18",
     "ts-node": "^9.1.1",
     "tsconfig-paths": "^3.9.0",
-    "typescript": "^4.2.3"
+    "typescript": "^4.2.3",
+    "passport": "^0.4.1"
   },
   "jest": {
     "moduleFileExtensions": [

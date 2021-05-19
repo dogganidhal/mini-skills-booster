@@ -1,4 +1,4 @@
-<div class="padded-container">
+<div class="pad-content">
   <p-toolbar>
     <div class="p-toolbar-group-left">
       <p-button routerLink="/quiz/create" label="New" icon="pi pi-plus"></p-button>
@@ -7,11 +7,11 @@
       <p-button icon="pi pi-sign-out" (click)="logout()"></p-button>
     </div>
   </p-toolbar>
-  <div class="padded-container">
+  <div class="pad-content">
     <h3>My quizzes</h3>
   </div>
   <app-user-quiz-list [quizzes]="userQuizzes"></app-user-quiz-list>
-  <div class="padded-container">
+  <div class="pad-content">
     <h3>My submissions</h3>
   </div>
   <app-user-submission-list [submissions]="userSubmissions"></app-user-submission-list>

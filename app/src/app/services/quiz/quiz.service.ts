@@ -8,6 +8,7 @@ import {environment} from "../../../environments/environment";
 import {HttpClient} from "@angular/common/http";
 import {SubmitQuizRequest} from "../../models/submit-quiz.dto";
 import {SubmissionReport} from "../../models/submission-report.dto";
+import {CreateQuizRequest} from "../../models/create-quiz.dto";
 
 @Injectable({
   providedIn: 'root'
@@ -45,6 +46,12 @@ export class QuizService extends BaseService {
   public submitQuiz(quizId: number, request: SubmitQuizRequest): Observable<SubmissionReport> {
     return this.httpClient
       .post<SubmissionReport>(`${environment.apiUrl}/quiz/${quizId}/submit`, request)
+      .pipe(catchError(this.handleError.bind(this)));
+  }
+
+  public createQuiz(request: CreateQuizRequest): Observable<Quiz> {
+    return this.httpClient
+      .post<Quiz>(`${environment.apiUrl}/quiz`, request)
       .pipe(catchError(this.handleError.bind(this)));
   }
 

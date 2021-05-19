@@ -24,10 +24,8 @@ export class AuthService extends BaseService {
     return jsonString !== null ? JSON.parse(jsonString) : null;
   }
   public set credentials(value: ExpiryAwareCredentials | null) {
-    console.log('set credentials', value);
     if (value !== null) {
       this.isConnectedBS.next(true);
-      // this.startRefreshTokenTimer();
       this.router.navigateByUrl('');
       localStorage.setItem(AuthService.CREDENTIALS_KEY, JSON.stringify(value));
     } else {
@@ -81,7 +79,6 @@ export class AuthService extends BaseService {
   public logout() {
     localStorage.removeItem(AuthService.CREDENTIALS_KEY);
     this.credentials = null;
-    // this.stopRefreshTokenTimer();
   }
 
   private static formatCredentials(credentials: Credentials): ExpiryAwareCredentials {
@@ -90,18 +87,5 @@ export class AuthService extends BaseService {
       expiresAt: Date.now() + credentials.expiresIn
     };
   }
-
-  // private refreshTokenTimeout?: number;
-  //
-  // private startRefreshTokenTimer() {
-  //   if (this.credentials !== null) {
-  //     const timeout = this.credentials.expiresIn;
-  //     this.refreshTokenTimeout = setTimeout(async () => await this.refreshCredentials().subscribe(), timeout);
-  //   }
-  // }
-  //
-  // private stopRefreshTokenTimer() {
-  //   clearTimeout(this.refreshTokenTimeout);
-  // }
 
 }

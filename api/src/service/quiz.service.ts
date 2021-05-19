@@ -96,10 +96,10 @@ export class QuizService {
 	public async getUserQuizzes(userId: number): Promise<Quiz[]> {
 		return this.quizRepository
 			.createQueryBuilder('quiz')
-			.innerJoinAndSelect('quiz.author', 'author')
-			.innerJoinAndSelect('quiz.questions', 'questions')
+			.leftJoinAndSelect('quiz.author', 'author')
+			.leftJoinAndSelect('quiz.questions', 'questions')
 			.leftJoinAndSelect('questions.suggestions', 'suggestions')
-			.innerJoinAndSelect('quiz.submissions', 'submissions')
+			.leftJoinAndSelect('quiz.submissions', 'submissions')
 			.leftJoinAndSelect('submissions.answers', 'answers')
 			.leftJoinAndSelect('answers.suggestions', 'answer_suggestions')
 			.where('author.id=:userId', { userId })
@@ -109,9 +109,9 @@ export class QuizService {
 	public async getUserSubmissions(userId: number): Promise<Submission[]> {
 		return this.submissionRepository
 			.createQueryBuilder('submission')
-			.innerJoinAndSelect('submission.quiz', 'quiz')
-			.innerJoinAndSelect('submission.user', 'user')
-			.innerJoinAndSelect('submission.answers', 'answers')
+			.leftJoinAndSelect('submission.quiz', 'quiz')
+			.leftJoinAndSelect('submission.user', 'user')
+			.leftJoinAndSelect('submission.answers', 'answers')
 			.leftJoinAndSelect('answers.question', 'question')
 			.leftJoinAndSelect('question.suggestions', 'question_suggestions')
 			.leftJoinAndSelect('answers.suggestions', 'answer_suggestions')

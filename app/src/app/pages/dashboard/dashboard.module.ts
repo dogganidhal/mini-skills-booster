@@ -22,6 +22,9 @@ import {RadioButtonModule} from "primeng/radiobutton";
 import {InputTextareaModule} from "primeng/inputtextarea";
 import {ToastModule} from "primeng/toast";
 import {AnswerPanelComponent} from "../answer-panel/answer-panel.component";
+import {InputTextModule} from "primeng/inputtext";
+import {CreateQuestionFormComponent} from "../create-question-form/create-question-form.component";
+import {CreateSuggestionFormComponent} from "../create-suggestion-form/create-suggestion-form.component";
 
 
 
@@ -34,7 +37,9 @@ import {AnswerPanelComponent} from "../answer-panel/answer-panel.component";
     SubmitQuizFormComponent,
     CreateQuizFormComponent,
     QuestionPanelComponent,
-    AnswerPanelComponent
+    AnswerPanelComponent,
+    CreateQuestionFormComponent,
+    CreateSuggestionFormComponent
   ],
   imports: [
     CommonModule,
@@ -51,7 +56,8 @@ import {AnswerPanelComponent} from "../answer-panel/answer-panel.component";
     FormsModule,
     RadioButtonModule,
     InputTextareaModule,
-    ToastModule
+    ToastModule,
+    InputTextModule
   ]
 })
 export class DashboardModule { }

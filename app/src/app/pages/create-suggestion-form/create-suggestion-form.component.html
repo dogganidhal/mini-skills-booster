@@ -1,0 +1,10 @@
+<div class="field-container p-fluid p-formgrid p-grid">
+  <div class="p-field p-col-12">
+    <label for="create-suggestion-content">Suggestion content</label>
+    <input id="create-suggestion-content" [(ngModel)]="content" (ngModelChange)="updateSuggestion()" type="text" pInputText>
+  </div>
+  <div class="p-field p-col-12">
+    <p-checkbox class="field-checkbox" id="suggestion-is-correct" [(ngModel)]="isCorrect" (ngModelChange)="updateSuggestion()" [binary]="true"></p-checkbox>
+    <label class="field-checkbox-label" for="suggestion-is-correct">Is correct ?</label>
+  </div>
+</div>

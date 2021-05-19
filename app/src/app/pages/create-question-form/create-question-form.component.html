@@ -1,0 +1,23 @@
+<div class="field-container p-fluid p-formgrid p-grid">
+  <div class="p-field p-col-12">
+    <label for="create-question-content">Content</label>
+    <input id="create-question-content" [(ngModel)]="content" (ngModelChange)="updateQuestion()" type="text" pInputText>
+  </div>
+  <div *ngFor="let type of questionTypeValues">
+    <div class="field-checkbox">
+      <p-radioButton
+        [name]="type"
+        [value]="type"
+        [(ngModel)]="questionType"
+        (ngModelChange)="updateQuestion()"
+        [inputId]="type"></p-radioButton>
+      <label [for]="type" class="field-checkbox-label">{{ questionTypeName(type) }}</label>
+    </div>
+  </div>
+  <div class="add-button" *ngIf="questionType !== 'free_text'">
+    <p-button label="Add suggestion" (click)="addSuggestion()" icon="pi pi-add" ></p-button>
+    <div *ngFor="let suggestionIndex of suggestionIndices">
+      <app-create-suggestion-form (suggestionChanged)="updateSuggestion(suggestionIndex, $event)"></app-create-suggestion-form>
+    </div>
+  </div>
+</div>

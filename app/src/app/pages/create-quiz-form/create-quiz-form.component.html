@@ -1,1 +1,52 @@
-<p>create-quiz-form works!</p>
+<p-toast></p-toast>
+<div class="center-content pad-content">
+  <p-card class="quiz-form-container" header="Create quiz">
+    <div class="field-container p-fluid p-formgrid p-grid">
+      <div class="p-field p-col-12">
+        <label for="create-quiz-name">Title</label>
+        <input
+          id="create-quiz-name"
+          type="text"
+          [(ngModel)]="name"
+          (ngModelChange)="updateQuiz()"
+          pInputText>
+      </div>
+    </div>
+    <div class="field-container p-fluid p-formgrid p-grid">
+      <div class="p-field p-col-12">
+        <label for="create-quiz-description">Description</label>
+        <textarea
+          id="create-quiz-description"
+          rows="4"
+          [style]="{ resize: 'none' }"
+          [(ngModel)]="description"
+          (ngModelChange)="updateQuiz()"
+          pInputTextarea></textarea>
+      </div>
+    </div>
+    <div class="field-container p-fluid p-formgrid p-grid">
+      <div class="p-field p-col-12">
+        <label for="create-quiz-due-date">Due date</label>
+        <input
+          id="create-quiz-due-date"
+          type="datetime-local"
+          [(ngModel)]="dueDateString"
+          (ngModelChange)="updateQuiz()"
+          pInputText>
+      </div>
+    </div>
+    <div *ngIf="questionIndices.length > 0">
+      <h2>Questions</h2>
+      <p-divider></p-divider>
+    </div>
+    <div *ngFor="let questionIndex of questionIndices">
+      <app-create-question-form (questionChanged)="editQuestion(questionIndex, $event)"></app-create-question-form>
+      <p-divider></p-divider>
+    </div>
+    <ng-template pTemplate="footer">
+      <p-button label="Submit" [loading]="loading" [disabled]="!valid" (click)="submit()" icon="pi pi-check" ></p-button>
+      <p-button (click)="addQuestion()" [style]="{'margin-left': '.5em'}" icon="pi pi-plus" label="Add question"></p-button>
+      <p-button label="Cancel" routerLink="/" icon="pi pi-times" styleClass="p-button-secondary" [style]="{'margin-left': '.5em'}"></p-button>
+    </ng-template>
+  </p-card>
+</div>

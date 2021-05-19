@@ -13,3 +13,27 @@ body {
   display: flex;
   justify-content: center;
 }
+
+.pad-content {
+  margin: 2em;
+}
+
+.center-content {
+  display: flex;
+  justify-items: center;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+}
+
+.quiz-form-container {
+  width: 32em;
+}
+
+.field-checkbox {
+  padding-top: 0.5em;
+}
+
+.field-checkbox-label {
+  padding-left: 0.5em;
+}

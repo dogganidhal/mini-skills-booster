@@ -1,3 +1,4 @@
+<p-toast></p-toast>
 <p-table [value]="quizzes" styleClass="p-datatable-gridlines">
   <ng-template pTemplate="header">
     <tr>
@@ -5,7 +6,7 @@
       <th>Name</th>
       <th>Description</th>
       <th>Submissions</th>
-      <th></th>
+      <th>Actions</th>
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-quiz>
@@ -14,7 +15,21 @@
       <td>{{quiz.name}}</td>
       <td>{{quiz.description}}</td>
       <td>{{quiz.submissions.length}}</td>
-      <td><button [routerLink]="'/quiz/' + quiz.id" pButton type="button" icon="pi pi-arrow-right" class="p-button-raised p-button-rounded"></button></td>
+      <td>
+        <button
+          ngxClipboard [cbContent]="shareUrl(quiz)"
+          (click)="notifyClipboardCopy()"
+          pButton type="button"
+          icon="pi pi-share-alt"
+          class="icon-button p-button-raised p-button-rounded">
+        </button>
+        <button
+          [routerLink]="'/quiz/' + quiz.id"
+          pButton type="button"
+          icon="pi pi-arrow-right"
+          class="icon-button p-button-raised p-button-rounded">
+        </button>
+      </td>
     </tr>
   </ng-template>
   <ng-template pTemplate="emptymessage">

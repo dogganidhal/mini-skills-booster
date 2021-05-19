@@ -34,13 +34,13 @@ export class QuizController {
 		return this.quizService.getUserQuizzes(principal.id);
 	}
 
-	@Get('submission/mine')
+	@Get('submissions/mine')
 	@UseGuards(JwtAuthGuard)
 	public async getUserSubmissions(@Subject() principal: Principal): Promise<Submission[]> {
 		return this.quizService.getUserSubmissions(principal.id);
 	}
 
-	@Get('submission/:id')
+	@Get('submissions/:id')
 	@UseGuards(JwtAuthGuard)
 	public async getSubmission(@Param('id') submissionId: number, @Subject() principal: Principal): Promise<Submission> {
 		return this.quizService.submissionById(submissionId, principal.id);

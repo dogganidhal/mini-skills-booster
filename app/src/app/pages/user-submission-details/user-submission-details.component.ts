@@ -3,6 +3,7 @@ import {Submission} from "../../models/submission.dto";
 import {ActivatedRoute} from "@angular/router";
 import {QuizService} from "../../services/quiz/quiz.service";
 import {Answer} from "../../models/answer.dto";
+import {Location} from "@angular/common";
 
 @Component({
   selector: 'app-user-submission-details',
@@ -14,7 +15,7 @@ export class UserSubmissionDetailsComponent implements OnInit {
   public submission?: Submission;
   public loading: boolean = false;
 
-  constructor(private route: ActivatedRoute, private quizService: QuizService) { }
+  constructor(private route: ActivatedRoute, private quizService: QuizService, private location: Location) { }
 
   public ngOnInit() {
     this.loading = true;
@@ -32,4 +33,7 @@ export class UserSubmissionDetailsComponent implements OnInit {
     return this.submission?.answers?.filter(a => a.question.id === questionId)?.pop();
   }
 
+  public goBack() {
+    this.location.back();
+  }
 }

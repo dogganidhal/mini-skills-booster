@@ -109,9 +109,9 @@ export class QuizService {
 	public async getUserSubmissions(userId: number): Promise<Submission[]> {
 		return this.submissionRepository
 			.createQueryBuilder('submission')
-			.leftJoinAndSelect('submission.quiz', 'quiz')
-			.leftJoinAndSelect('submission.user', 'user')
-			.leftJoinAndSelect('submission.answers', 'answers')
+			.leftJoinAndSelect('submissions.quiz', 'quiz')
+			.leftJoinAndSelect('submissions.user', 'user')
+			.leftJoinAndSelect('submissions.answers', 'answers')
 			.leftJoinAndSelect('answers.question', 'question')
 			.leftJoinAndSelect('question.suggestions', 'question_suggestions')
 			.leftJoinAndSelect('answers.suggestions', 'answer_suggestions')

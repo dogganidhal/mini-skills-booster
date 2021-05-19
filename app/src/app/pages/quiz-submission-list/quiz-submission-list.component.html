@@ -1,0 +1,9 @@
+<div *ngIf="loading">
+  <p-progressBar *ngIf="loading" mode="indeterminate"></p-progressBar>
+</div>
+<div *ngIf="!loading" class="pad-content">
+  <div class="pad-content">
+    <h3>{{ quiz.name }} submissions</h3>
+  </div>
+  <app-user-submission-list [submissions]="submissions"></app-user-submission-list>
+</div>

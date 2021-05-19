@@ -13,7 +13,8 @@ export class UserSubmissionListComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
+  public ngOnInit() {
+
   }
 
 }

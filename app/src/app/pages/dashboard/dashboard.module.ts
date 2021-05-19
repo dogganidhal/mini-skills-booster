@@ -25,6 +25,8 @@ import {AnswerPanelComponent} from "../answer-panel/answer-panel.component";
 import {InputTextModule} from "primeng/inputtext";
 import {CreateQuestionFormComponent} from "../create-question-form/create-question-form.component";
 import {CreateSuggestionFormComponent} from "../create-suggestion-form/create-suggestion-form.component";
+import {ClipboardModule} from "ngx-clipboard";
+import {QuizSubmissionListComponent} from "../quiz-submission-list/quiz-submission-list.component";
 
 
 
@@ -39,7 +41,8 @@ import {CreateSuggestionFormComponent} from "../create-suggestion-form/create-su
     QuestionPanelComponent,
     AnswerPanelComponent,
     CreateQuestionFormComponent,
-    CreateSuggestionFormComponent
+    CreateSuggestionFormComponent,
+    QuizSubmissionListComponent
   ],
   imports: [
     CommonModule,
@@ -57,7 +60,8 @@ import {CreateSuggestionFormComponent} from "../create-suggestion-form/create-su
     RadioButtonModule,
     InputTextareaModule,
     ToastModule,
-    InputTextModule
+    InputTextModule,
+    ClipboardModule
   ]
 })
 export class DashboardModule { }

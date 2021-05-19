@@ -7,5 +7,5 @@ export interface Quiz {
 	readonly name: string;
 	readonly description: string;
 	readonly questions: Question[];
-	readonly submission?: Submission[];
+	readonly submissions?: Submission[];
 }

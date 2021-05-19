@@ -10,11 +10,11 @@
   </ng-template>
   <ng-template pTemplate="body" let-submission>
     <tr>
-      <td>{{submission.quiz.id}}</td>
+      <td>{{submission.id}}</td>
       <td>{{submission.quiz.name}}</td>
       <td>{{submission.quiz.description}}</td>
       <td>{{submission.date}}</td>
-      <td><button [routerLink]="'/submission/' + submission.id" pButton type="button" icon="pi pi-arrow-right" class="p-button-raised p-button-rounded"></button></td>
+      <td><button [routerLink]="'/submissions/' + submission.id" pButton type="button" icon="pi pi-arrow-right" class="p-button-raised p-button-rounded"></button></td>
     </tr>
   </ng-template>
   <ng-template pTemplate="emptymessage">
